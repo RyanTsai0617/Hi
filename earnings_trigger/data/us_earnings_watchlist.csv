@@ -1,0 +1,8 @@
+ticker,company_name,ir_url,enabled
+NVDA,NVIDIA,https://investor.nvidia.com,1
+MSFT,Microsoft,https://www.microsoft.com/en-us/Investor,1
+AMZN,Amazon,https://www.aboutamazon.com/investor-relations,1
+GOOGL,Alphabet,https://abc.xyz/investor,1
+META,Meta,https://investor.atmeta.com,1
+TSM,TSMC,https://investor.tsmc.com,1
+NFLX,Netflix,https://ir.netflix.net,1
