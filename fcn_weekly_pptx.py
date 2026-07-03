@@ -399,9 +399,52 @@ def slide_eki_compare(prs):
                     "EKI 買掉的是頻率、留下的是嚴重度：機率降幅與預期損失降幅之間的楔子，就是客戶承接的尾部。")
 
 
-def slide_monday(prs):
+def slide_combos(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     add_banner(slide, 8)
+    add_text(slide, Inches(0.7), Inches(0.5), Inches(12), Inches(0.5),
+             [[("四之三  六種組合的決策考量", 24, True, BLACK),
+               ("   列 = 有無 EKI · 欄 = K 檔位 · 票息為 6M 期望損失", 12, False, MED_GRAY)]])
+    combos = [
+        # (title, tag, coupon, question)
+        ("K=80% 無KI", "中頻淺損 · 折價接股型", "2.69%",
+         "客戶願意在 80% 接這檔股票嗎？轉換是進場不是災難 — 標的選願意長抱的（TSM 型）；票息偏薄需跑贏直債"),
+        ("K=90% 無KI", "高頻中損 · 持股替代型", "5.70%",
+         "轉換近四成 = 一年被轉換數次：接股後處置紀律與運營承受度？適合把 FCN 當持股策略的專業戶"),
+        ("K=100% 無KI", "極高頻 · 建倉工具型", "10.16%",
+         "轉換過半 = 票息補貼的定期建倉；唯一票息真實反映風險的一格。帳戶能否接股？當建倉工具賣、不當收益商品賣"),
+        ("K=80% + EKI 65%", "低頻中損 · 過度保護型", "1.60%",
+         "商品成立性：雙重保護後票息可能跑不贏 IG 直債 — 若票息 < 直債+流動性讓渡，該勸客戶直接買債"),
+        ("K=90% + EKI 65%", "低頻深損 · 不上不下型", "2.32%",
+         "存在理由：比左格只多 0.72pp 票息、懸崖加深 10pp — 通常是行銷門檻而非風險最適；先回答為何不是左右兩格"),
+        ("K=100% + EKI 65%", "低頻懸崖 · 賣相款", "3.04%",
+         "考慮全在尾部：單一股跳空與財報、同標的結構集中度、KI 真發生時（−35% 起跳）客戶的行為劇本"),
+    ]
+    for idx, (title, tag, coupon, q) in enumerate(combos):
+        row, col = divmod(idx, 3)
+        x = Inches(0.55) + col * Inches(4.22)
+        y = Inches(1.25) + row * Inches(2.25)
+        add_rect(slide, x, y, Inches(4.05), Inches(2.1), WHITE,
+                 line=BORDER_GRAY, line_w=Pt(1))
+        add_rect(slide, x, y, Inches(4.05), Pt(2.5),
+                 GS_BLUE if row == 0 else GS_GOLD)
+        add_text(slide, x + Inches(0.15), y + Inches(0.1), Inches(3.75), Inches(0.55),
+                 [[(title, 13, True, BLACK), ("   " + coupon, 12, True, GS_GOLD_DARK)],
+                  [(tag, 10, True, GS_BLUE)]], line_spacing=1.1)
+        add_text(slide, x + Inches(0.15), y + Inches(0.72), Inches(3.75), Inches(1.3),
+                 [[(q, 9.5, False, DARK_GRAY)]], line_spacing=1.15)
+    add_text(slide, Inches(0.7), Inches(5.85), Inches(11.9), Inches(0.6),
+             [[("五關 checklist：", 10.5, True, GS_BLUE),
+               ("① 票息 ≥ 期望損失＋成本  ② 接股後劇本先寫好  ③ 標的×條款交互（MU 型不配深KI＋高K）  "
+                "④ 觀察條款（改每日觸發率近 ×2）  ⑤ IV 水位（VIX 16.59 → 六格全面偏薄，等 vol spike）",
+                10.5, False, DARK_GRAY)]], line_spacing=1.2)
+    add_bottom_line(slide, Inches(0.7), Inches(6.55), Inches(11.9),
+                    "左欄（無KI）的考慮在「轉換後」、右欄（EKI）的考慮在「尾部」— 加不加 EKI 是選擇管理哪種問題，不是有沒有問題。")
+
+
+def slide_monday(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    add_banner(slide, 9)
     add_text(slide, Inches(0.7), Inches(0.55), Inches(12), Inches(0.5),
              [[("五  Monday 待決策", 24, True, BLACK)]])
     tasks = [
@@ -460,6 +503,7 @@ def build(out_path: str):
     slide_supp_topics(prs)
     slide_matrix(prs)
     slide_eki_compare(prs)
+    slide_combos(prs)
     slide_monday(prs)
     slide_back(prs)
     prs.save(out_path)
