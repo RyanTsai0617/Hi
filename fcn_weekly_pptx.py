@@ -359,9 +359,45 @@ def slide_matrix(prs):
                     "票息由高 IV 單一股向低 IV 指數/防禦遞減，p(KI) 與條件損失同向遞減 — 票息差距買的是尾部風險。")
 
 
-def slide_monday(prs):
+def slide_eki_compare(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     add_banner(slide, 7)
+    add_text(slide, Inches(0.7), Inches(0.55), Inches(12), Inches(0.5),
+             [[("四之二  同 K 對照 — 加 EKI 的前後差異", 24, True, BLACK),
+               ("   Monte Carlo · σ=40% · 6M · EKI 65% 到期觀察 · 非年化", 12, False, MED_GRAY)]])
+    headers = ["K", "結構", "轉換機率", "轉換時平均損失", "轉換時最低損失", "期望損失(=票息原料)"]
+    rows = [
+        ["80%", "無 KI", "23.6%", "11.6%", "~0%", "2.69%"],
+        ["80%", "EKI 65%", "7.3%", "22.4%", "15.0%", "1.60%"],
+        ["90%", "無 KI", "38.1%", "15.2%", "~0%", "5.70%"],
+        ["90%", "EKI 65%", "7.3%", "32.4%", "25.0%", "2.32%"],
+        ["100%", "無 KI", "52.8%", "19.6%", "~0%", "10.16%"],
+        ["100%", "EKI 65%", "7.3%", "42.4%", "35.0%", "3.04%"],
+    ]
+    add_table(slide, Inches(0.55), Inches(1.3), Inches(7.3), Inches(3.4),
+              headers, rows,
+              col_widths=[Inches(0.8), Inches(1.25), Inches(1.15), Inches(1.4),
+                          Inches(1.4), Inches(1.3)],
+              font_size=11, header_size=10.5,
+              align_map={0: PP_ALIGN.RIGHT, 2: PP_ALIGN.RIGHT, 3: PP_ALIGN.RIGHT,
+                         4: PP_ALIGN.RIGHT, 5: PP_ALIGN.RIGHT})
+    add_text(slide, Inches(8.15), Inches(1.35), Inches(4.6), Inches(5.0),
+             [[("1. EKI 刪掉的全是淺層轉換", 12, True, GS_BLUE)],
+              [("深層情境（S<65%）有無 EKI 損益相同 — 免小傷、不免大傷；留下的轉換全是深的（條件損失 11.6%→22.4%）", 10.5, False, DARK_GRAY)],
+              [("2. 轉換機率與 K 脫鉤", 12, True, GS_BLUE)],
+              [("三檔 K 全是 7.3% = P(S<KI)。K 只決定轉換深度，最低損失 = K−KI — 這就是「EKI 讓 K 可以積極」的機制，代價是純 severity", 10.5, False, DARK_GRAY)],
+              [("3. 票息讓渡 = 被刪中段的價值", 12, True, GS_BLUE)],
+              [("K=100%：放棄 7.13pp 換轉換機率 −45.5pp；EKI 下 K 80→100% 票息只 +1.44pp、懸崖 +20pp", 10.5, False, DARK_GRAY)],
+              [("4. 觀察頻率是隱藏參數", 12, True, GS_BLUE)],
+              [("KI 65% 改每日觀察觸發率 7.3%→~12.9%，且模型未含跳空（MU 單週 −13%）", 10.5, False, DARK_GRAY)]],
+             line_spacing=1.25)
+    add_bottom_line(slide, Inches(0.7), Inches(6.5), Inches(11.9),
+                    "同 K 對照才看得到：EKI 買掉的是頻率、留下的是嚴重度 — 「高執行價+低轉換機率」的賣相由票息讓渡與懸崖加深支付。")
+
+
+def slide_monday(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    add_banner(slide, 8)
     add_text(slide, Inches(0.7), Inches(0.55), Inches(12), Inches(0.5),
              [[("五  Monday 待決策", 24, True, BLACK)]])
     tasks = [
@@ -419,6 +455,7 @@ def build(out_path: str):
     slide_main_topics(prs)
     slide_supp_topics(prs)
     slide_matrix(prs)
+    slide_eki_compare(prs)
     slide_monday(prs)
     slide_back(prs)
     prs.save(out_path)
